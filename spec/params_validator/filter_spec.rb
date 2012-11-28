@@ -79,6 +79,26 @@ describe ParamsValidator::Filter do
     end.should raise_error ParamsValidator::InvalidParamsException
   end
 
+  it 'should raise InvalidParamsException if param is nil and there are requirements' do
+    lambda do
+      ParamsValidator::Filter.validate_params(
+        nil,
+        { :field_name => { :_with => [:presence], :level_2 => { :_with => [:presence] } } }
+      )
+    end.should raise_error ParamsValidator::InvalidParamsException
+  end
+
+  it 'should raise InvalidParamsException if param is scalar and there are nested requirements' do
+    lambda do
+      ParamsValidator::Filter.validate_params(
+        { 'field_name' => 42 },
+        { :field_name => { :_with => [:presence],
+            :level_2 => { :_with => [:presence],
+              :level_3 => { :_with => [:presence], } } } }
+      )
+    end.should raise_error ParamsValidator::InvalidParamsException
+  end
+
   it 'should raise InvalidValidatorException when invalid filter name is used' do
     lambda do
       ParamsValidator::Filter.validate_params(

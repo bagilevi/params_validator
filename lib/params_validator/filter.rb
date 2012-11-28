@@ -9,7 +9,8 @@ module ParamsValidator
         errors = validate_field(field, params, validation_definition[:_with], errors, field_chain)
 
         validation_definition.reject {|k,v| k == :_with }.each do |nested_field, nested_validation_definition|
-          validate_params(params[field.to_s] || params[field.to_sym], { nested_field => nested_validation_definition }, field_chain)
+          value = params && params.is_a?(Hash) && (params[field.to_s] || params[field.to_sym])
+          validate_params(value, { nested_field => nested_validation_definition }, field_chain)
         end
       end
       if errors.count > 0
