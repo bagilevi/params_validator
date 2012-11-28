@@ -49,6 +49,14 @@ describe ParamsValidator::Filter do
     )
   end
 
+  it 'should accept symbol param keys' do
+    ParamsValidator::Validator::Presence.should_receive(:valid?).with('a string') { true }
+    ParamsValidator::Filter.validate_params(
+      { :field_name => 'a string' },
+      { :field_name => { :_with => [:presence] } }
+    )
+  end
+
   it 'should raise InvalidParamsException when validator returns false' do
     ParamsValidator::Validator::TypeInteger.stub(:valid?) { false }
     lambda do

@@ -8,7 +8,7 @@ module ParamsValidator
         errors = validate_field(field, params, validation_definition[:_with], errors)
 
         validation_definition.reject {|k,v| k == :_with }.each do |nested_field, nested_validation_definition|
-          validate_params(params[field.to_s], { nested_field => nested_validation_definition })
+          validate_params(params[field.to_s] || params[field.to_sym], { nested_field => nested_validation_definition })
         end
       end
       if errors.count > 0
@@ -26,7 +26,7 @@ module ParamsValidator
         camelized_validator_name = self.camelize(validator_name)
         begin
           validator = constantize("ParamsValidator::Validator::#{camelized_validator_name}")
-          value = params.is_a?(Hash) ? params[field.to_s] : nil
+          value = params.is_a?(Hash) ? (params[field.to_s] || params[field.to_sym]) : nil
           unless validator.valid?(value)
             errors[field] = validator.error_message
           end
