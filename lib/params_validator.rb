@@ -5,6 +5,12 @@ module ParamsValidator
   class InvalidValidatorException < Exception; end
   class InvalidParamsException < Exception
     attr_accessor :errors
+
+    def message
+      errors.map do |key, value|
+        "#{Array(key).join(".")} #{value}"
+      end.join(", ")
+    end
   end
 end
 

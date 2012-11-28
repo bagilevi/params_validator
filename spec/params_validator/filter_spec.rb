@@ -57,6 +57,18 @@ describe ParamsValidator::Filter do
     )
   end
 
+  it 'should mention the offending parameter in the exception message' do
+    ParamsValidator::Validator::Presence.stub(:valid?).with(nil) { false }
+    lambda do
+      ParamsValidator::Filter.validate_params(
+        { },
+        { :field_name => { :_with => [:presence] } }
+      )
+    end.should raise_error{|exception|
+      exception.errors.should == {:field_name=>"is empty"}
+    }
+  end
+
   it 'should raise InvalidParamsException when validator returns false' do
     ParamsValidator::Validator::TypeInteger.stub(:valid?) { false }
     lambda do
@@ -140,7 +152,9 @@ describe ParamsValidator::Filter do
           { 'l1' => { 'l2' => { 'i' => 1, 'l3' => { } } } },
           defs
         )
-      end.should raise_error ParamsValidator::InvalidParamsException
+      end.should raise_error(ParamsValidator::InvalidParamsException){|exception|
+        exception.errors.should == {[:l1, :l2, :l3]=>"is empty"}
+      }
     end
 
   end
