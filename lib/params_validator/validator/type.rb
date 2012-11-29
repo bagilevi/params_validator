@@ -46,6 +46,18 @@ module ParamsValidator
       extend Base
       define_type_validator('hash') { |value| value.kind_of? Hash }
     end
+
+    module TypeScalar
+      def self.error_message
+        "is not scalar"
+      end
+
+      def self.valid?(value)
+        [String, Fixnum, Float, TrueClass, FalseClass, NilClass].any?{|klass|
+          value.is_a? klass
+        }
+      end
+    end
   end
 end
 

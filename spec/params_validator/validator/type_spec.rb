@@ -99,6 +99,40 @@ module ParamsValidator
         TypeHash.valid?(nil).should be_true
       end
     end
+
+    describe TypeScalar do
+      it 'should return false for Hash value' do
+        TypeScalar.valid?({}).should be_false
+      end
+
+      it 'should return false for Array value' do
+        TypeScalar.valid?([]).should be_false
+      end
+
+      it 'should return true for String value' do
+        TypeScalar.valid?('foo').should be_true
+      end
+
+      it 'should return true for empty String value' do
+        TypeScalar.valid?('').should be_true
+      end
+
+      it 'should return true for Fixnum value' do
+        TypeScalar.valid?(-3).should be_true
+      end
+
+      it 'should return true for Float value' do
+        TypeScalar.valid?(4.4).should be_true
+      end
+
+      it 'should return true for nil value' do
+        TypeScalar.valid?(nil).should be_true
+      end
+
+      it 'should return true for Boolean value' do
+        TypeScalar.valid?(true).should be_true
+      end
+    end
   end
 end
 
